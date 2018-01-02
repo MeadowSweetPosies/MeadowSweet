@@ -1,0 +1,93 @@
+{%  include 'subscription-cart-footer' %} 
+ <!-- /templates/cart.liquid -->
+{% comment %}
+
+  For info on test orders:
+    - General http://docs.shopify.com/manual/your-store/orders/test-orders
+    - Shopify Payments - http://docs.shopify.com/manual/more/shopify-payments/testing-shopify-payments
+
+{% endcomment %}
+<div class="grid">
+  <div class="grid__item large--five-sixths push--large--one-twelfth">
+    {% if cart.item_count > 0 %}
+      <header class="section-header text-center">
+        <h1 class="text-center">{{ 'cart.general.title' | t }}</h1>
+        <hr class="hr--small">
+      </header>
+
+      <form action="/cart" method="post" novalidate class="cart">
+        <div class="cart__row">
+          <div class="grid--full cart__row--table-large">
+            {% comment %}
+              Optional, add a textarea for special notes
+                - Your theme settings can turn this on or off. Default is on.
+                - Make sure you have name="note" for the message to be submitted properly
+            {% endcomment %}
+            {% if settings.cart_notes_enable %}
+              <div class="grid__item large--seven-twelfths">
+                <div class="cart__note">
+                  {% comment %}
+                  Can I add some basic Javascript here to add buttons or at least the date when it will be delivered.
+                  I can add html.  This change appears on the cart page but not the cart slider.  That must be a different liquid.
+                  {% endcomment %}
+                  <!--<div><span>Hello World!</span></div>-->
+                  <label for="CartSpecialInstructions">{{ 'cart.general.note' | t }}</label>
+                  <textarea name="note" class="input-full" id="CartSpecialInstructions" style="border-style:solid;border-width:1px;border-color:#857082">{{ cart.note }}</textarea>
+                </div>
+              </div>
+            {% endif %}
+            <div class="grid__item large--five-twelfths text-center large--text-right{% unless settings.cart_notes_enable %} push--large--seven-twelfths{% endunless %}">
+              <div class="grid--full cart__row--table">
+                <div class="grid__item one-half large--two-thirds large--text-center">
+                  <p class="cart__subtotal">{{ 'cart.general.subtotal' | t }}</p>
+                </div>
+                <div class="grid__item one-half large--one-third">
+                  <p class="cart__subtotal">{{ cart.total_price | money }}</p>
+                </div>
+              </div>
+              
+              <p><em>{{ 'cart.general.shipping_at_checkout' | t }}</em></p>
+              <input type="submit" name="update" class="btn--secondary update-cart" value="{{ 'cart.general.update' | t }}">
+              <button type="submit" name="checkout" class="btn cart__checkout">
+                {{ 'cart.general.checkout' | t }} <span class="icon icon-arrow-right" aria-hidden="true"></span>
+              </button>
+
+              {% if additional_checkout_buttons %}
+ <span class="additional-checkout-buttons"> 
+
+                <div class="additional_checkout_buttons">{{ content_for_additional_checkout_buttons }}</div>
+              
+ </span> 
+{% endif %}
+            </div>
+          </div>
+
+        </div>
+        
+        <h4>Additional details</h4>
+        <p class="cart-attribute__field">
+          <label>Next delivery dates</label><br>
+          {% assign cartProducts = cart.items | map: 'sku' %}
+          {% if cartProducts contains 'TABLE2017' or cartProducts contains 'WREATH2017_AC' or cartProducts contains 'WREATH2017_MC' %}
+          <select style="border-style:solid;border-width:1px;border-color:#857082" id="next-delivery-date" name="attributes[Next delivery date]">
+          	<option value="Friday 22 December 2017"{% if cart.attributes["Next delivery date"] == "Friday 22 December 2017" %} selected{% endif %} >Friday 22 December 2017</option>
+          </select>
+          {% else %}
+          <select style="border-style:solid;border-width:1px;border-color:#857082" id="next-delivery-date" name="attributes[Next delivery date]">
+          	<option value="Friday 5 January 2018"{% if cart.attributes["Next delivery date"] == "Friday 5 January 2018" %} selected{% endif %} >Friday 5 January 2018</option>
+          	<option value="Friday 12 January 2018"{% if cart.attributes["Next delivery date"] == "Friday 12 January 2018" %} selected{% endif %} >Friday 12 January 2018</option>
+          	<option value="Friday 19 January 2018"{% if cart.attributes["Next delivery date"] == "Friday 19 January 2018" %} selected{% endif %} >Friday 19 January 2018</option>
+          </select>
+          {% endif %}
+		</p>
+        <p class="cart-attribute__field">
+          <label for="email-address-of-gift-recipient">Email address of gift recipient</label>
+          <input id="email-address-of-gift-recipient" style="border-style:solid;border-width:1px;border-color:#857082" pattern="*@*/.*" type="text" name="attributes[Email address of gift recipient]" value="{{ cart.attributes["Email address of gift recipient"] }}">
+        </p>
+		<p class="cart-attribute__field">
+          <label for="leave-a-message-for-the-gift-recipient">Message for the gift recipient.</label>
+          <textarea id="leave-a-message-for-the-gift-recipient" style="border-style:solid;border-width:1px;border-color:#857082" name="attributes[Leave a message for the gift recipient.]">{{ cart.attributes["Leave a message for the gift recipient."] }}</textarea>
+		</p>       
+      </form>
+  </div>
+</div>
