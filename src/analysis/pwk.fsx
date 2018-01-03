@@ -12,7 +12,7 @@ let getPwk (matchWhat:string) (matchIn:ObjectSeries<string>) =
     pwk |> Seq.head         // possibly no element so head will fail but ho hum
 
 
-let sales = Frame.ReadCsv(__SOURCE_DIRECTORY__ + "\data\sales.csv")
+let sales = Frame.ReadCsv(__SOURCE_DIRECTORY__ + "/data/sales.csv")
 let memos = sales |> Frame.filterRows(fun k v -> v.GetAs<decimal>("Total") > 0m) |> Frame.sliceCols ["Memo"]
 let pwkOnly:Series<int, string[]> = memos |> 
                                         Frame.rows |> 
